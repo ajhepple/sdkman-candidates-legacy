@@ -19,8 +19,19 @@
 SDKMAN_SERVICE="@SDKMAN_SERVICE@"
 SDKMAN_VERSION="<SDKMAN_CLI_VERSION>"
 
+# Define install directory and profile inititialisation snippet
+sdkman_init_snippet=$'#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!\n'
 if [ -z "$SDKMAN_DIR" ]; then
     SDKMAN_DIR="$HOME/.sdkman"
+    sdkman_init_snippet+=$( cat << EOF
+export SDKMAN_DIR="\$HOME/.sdkman"
+[[ -s "\$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "\$HOME/.sdkman/bin/sdkman-init.sh"
+EOF)
+else
+    sdkman_init_snippet+=$( cat << EOF
+export SDKMAN_DIR="$SDKMAN_DIR"
+[[ -s "${SDKMAN_DIR}/bin/sdkman-init-sh" ]] && source "${SDKMAN_DIR}/bin/sdkman-init.sh"
+EOF)
 fi
 
 # Local variables
@@ -40,13 +51,6 @@ sdkman_profile="${HOME}/.profile"
 sdkman_bashrc="${HOME}/.bashrc"
 sdkman_zshrc="${HOME}/.zshrc"
 sdkman_platform=$(uname)
-
-sdkman_init_snippet=$( cat << EOF
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$SDKMAN_DIR"
-[[ -s "${SDKMAN_DIR}/bin/sdkman-init.sh" ]] && source "${SDKMAN_DIR}/bin/sdkman-init.sh"
-EOF
-)
 
 # OS specific support (must be 'true' or 'false').
 cygwin=false;
